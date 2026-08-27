@@ -1,0 +1,89 @@
+# great_expectations.yml
+config_version: 3.0
+datasources:
+  nasdaq_postgres:
+    class_name: Datasource
+    module_name: great_expectations.datasource
+    execution_engine:
+      class_name: SqlAlchemyExecutionEngine
+      module_name: great_expectations.execution_engine
+      connection_string: ${DATABASE_URL}
+    data_connectors:
+      default_runtime_data_connector:
+        name: default_runtime_data_connector
+        class_name: RuntimeDataConnector
+        module_name: great_expectations.datasource.data_connector
+        batch_identifiers:
+          - default_identifier_name
+config_variables_file_path: uncommitted/config_variables.yml
+
+plugins_directory: plugins/
+
+stores:
+  expectations_store:
+    class_name: ExpectationsStore
+    store_backend:
+      class_name: TupleFilesystemStoreBackend
+      base_directory: expectations/
+
+  validations_store:
+    class_name: ValidationsStore
+    store_backend:
+      class_name: TupleFilesystemStoreBackend
+      base_directory: uncommitted/validations/
+
+  evaluation_parameter_store:
+    class_name: EvaluationParameterStore
+  checkpoint_store:
+    class_name: CheckpointStore
+    store_backend:
+      class_name: TupleFilesystemStoreBackend
+      suppress_store_backend_id: true
+      base_directory: checkpoints/
+
+  profiler_store:
+    class_name: ProfilerStore
+    store_backend:
+      class_name: TupleFilesystemStoreBackend
+      suppress_store_backend_id: true
+      base_directory: profilers/
+
+expectations_store_name: expectations_store
+validations_store_name: validations_store
+evaluation_parameter_store_name: evaluation_parameter_store
+checkpoint_store_name: checkpoint_store
+
+data_docs_sites:
+  local_site:
+    class_name: SiteBuilder
+    show_how_to_buttons: true
+    store_backend:
+      class_name: TupleFilesystemStoreBackend
+      base_directory: uncommitted/data_docs/local_site/
+    site_index_builder:
+      class_name: DefaultSiteIndexBuilder
+fluent_datasources:
+  nasdaq_datasource:
+    type: postgres
+    assets:
+      prices:
+        type: table
+        order_by: []
+        batch_metadata: {}
+        table_name: prices
+        schema_name:
+      nasdaq_stock_data:
+        type: table
+        order_by: []
+        batch_metadata: {}
+        table_name: prices
+        schema_name:
+    connection_string: ${DATABASE_URL}
+notebooks:
+anonymous_usage_statistics:
+  data_context_id: e73f768a-5eb7-4611-8969-96aa8a9e388f
+  enabled: true
+include_rendered_content:
+  globally: false
+  expectation_suite: false
+  expectation_validation_result: false
